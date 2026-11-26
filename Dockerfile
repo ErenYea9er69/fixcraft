@@ -1,5 +1,9 @@
 FROM node:22-slim AS builder
 
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -12,7 +16,7 @@ COPY services ./services
 COPY types ./types
 COPY public ./public
 
-RUN npm run build
+RUN npm run build && npm prune --omit=dev
 
 FROM node:22-slim AS runner
 
@@ -23,9 +27,8 @@ ENV APP_VERSION=${APP_VERSION}
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
-
+COPY package.json ./
+COPY --from=builder /app/node_modules ./node_modules
 COPY server ./server
 COPY public ./public
 COPY --from=builder /app/dist ./dist
