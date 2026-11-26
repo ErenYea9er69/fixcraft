@@ -7,7 +7,7 @@ Pull Request / Push / Tag vX.Y.Z
         │
         ▼
 ┌───────────────────────────────┐
-│  CI: test (Matrice Node 20/22)│ ──► Artefact JUnit XML (test-results/)
+│  CI: test (Matrice Node 22/24)│ ──► Artefact JUnit XML (test-results/)
 └───────────────┬───────────────┘
                 │ needs: test
                 ▼
