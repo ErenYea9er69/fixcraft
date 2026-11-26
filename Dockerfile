@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY tsconfig.json vite.config.ts index.html index.css main.tsx App.tsx ./
+COPY tsconfig.json vite.config.ts vite-env.d.ts index.html index.css main.tsx App.tsx ./
 COPY components ./components
 COPY context ./context
 COPY services ./services
