@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# SQLite databases & journals
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+test/test-fixcraft-*.db*
+
+# User uploads (keep folder)
+uploads/*
+!uploads/.gitkeep
+
+# Test artifacts & logs
+test-results/
+coverage/
+*.log
+npm-debug.log*
+
+# Editor / AI / OS artifacts
+.superpowers/
+docs/superpowers/
+.subagent_section12.txt
+.DS_Store
+Thumbs.db
