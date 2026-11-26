@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-fixcraft}
+      POSTGRES_USER: ${POSTGRES_USER:-fixcraft}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fixcraft} -d ${POSTGRES_DB:-fixcraft}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  app:
+    image: ${IMAGE_NAME:-ghcr.io/erenyea9er69/fixcraft}:${IMAGE_TAG:-1.0.0}
+    build:
+      context: .
+      args:
+        APP_VERSION: ${IMAGE_TAG:-1.0.0}
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3001}:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      APP_VERSION: ${IMAGE_TAG:-1.0.0}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3001,http://localhost:3000}
+      TRUST_PROXY: ${TRUST_PROXY:-1}
+      DB_PATH: /app/data/fixcraft.db
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER:-fixcraft}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      PGDATABASE: ${POSTGRES_DB:-fixcraft}
+    volumes:
+      - app_data:/app/data
+      - app_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  db_data:
+  app_data:
+  app_uploads:

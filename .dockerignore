@@ -1,0 +1,17 @@
+node_modules
+.git
+.github
+dist
+*.db
+*.db-shm
+*.db-wal
+test
+uploads
+docs
+.env
+.env.*
+.superpowers
+.subagent_section12.txt
+test-results
+coverage
+*.log
