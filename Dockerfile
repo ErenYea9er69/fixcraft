@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY public ./public
 
 RUN npm run build
 
-FROM node:22-alpine AS runner
+FROM node:22-slim AS runner
 
 ARG APP_VERSION=1.0.0
 ENV NODE_ENV=production
